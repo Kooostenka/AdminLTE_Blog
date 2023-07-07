@@ -19,12 +19,24 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\TagController;
 use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\PageController;
 
 use Illuminate\Support\Facades\Auth;
 
 
 Route::group(['prefix'=>'admin', 'middleware' => ['auth', 'admin']], function() {
     Route::get('/', [MainController::class, 'index'])->name('admin.main.index');
+
+    Route::group(['prefix'=>'pages'], function() {
+        Route::get('/', [PageController::class, 'index'])->name('admin.page.index');
+        Route::get('/create', [PageController::class, 'create'])->name('admin.page.create');
+        Route::post('/', [PageController::class, 'store'])->name('admin.page.store');
+        Route::get('/{page}', [PageController::class, 'show'])->name('admin.page.show');
+        Route::get('/{page}/edit', [PageController::class, 'edit'])->name('admin.page.edit');
+        Route::patch('/{page}', [PageController::class, 'update'])->name('admin.page.update');
+        Route::delete('/{page}', [PageController::class, 'destroy'])->name('admin.page.destroy');
+        Route::get('/{page}/restore', [PageController::class, 'restore'])->name('admin.page.restore');
+    });
 
     Route::group(['prefix'=>'posts'], function() {
         Route::get('/', [PostController::class, 'index'])->name('admin.post.index');
@@ -73,7 +85,6 @@ Route::group(['prefix'=>'admin', 'middleware' => ['auth', 'admin']], function() 
 
 });
 
+Route::get('{page:slug}', \App\Http\Controllers\PageController::class)->name('page');
+
 Auth::routes();
-
-
-//Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
